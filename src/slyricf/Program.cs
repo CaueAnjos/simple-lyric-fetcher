@@ -1,2 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using slyricf.commands;
+using Spectre.Console.Cli;
+
+var app = new CommandApp<FetchLyricCommand>();
+await app.RunAsync(args);
