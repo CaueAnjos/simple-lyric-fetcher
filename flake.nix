@@ -25,7 +25,9 @@
     devShells = forEachSupportedSystem (
       {pkgs}: {
         default = pkgs.mkShell {
-          packages = with pkgs; [];
+          packages = with pkgs; [
+            dotnet-sdk_9
+          ];
 
           env = {};
 
