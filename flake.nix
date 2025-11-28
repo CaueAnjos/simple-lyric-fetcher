@@ -27,6 +27,7 @@
         default = pkgs.mkShell {
           packages = with pkgs; [
             dotnet-sdk_9
+            csharpier
           ];
 
           env = {};
