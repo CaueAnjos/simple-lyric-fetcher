@@ -10,6 +10,9 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
     {
         [CommandArgument(0, "<url>")]
         public string Url { get; set; } = string.Empty;
+
+        [CommandOption("-o|--output")]
+        public string? OutputPath { get; set; }
     }
 
     public override ValidationResult Validate(CommandContext context, Settings settings)
