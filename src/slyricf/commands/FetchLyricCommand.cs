@@ -61,20 +61,8 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
             AnsiConsole.WriteLine();
 
             var lyric = await GetLyricFromContent(content, settings.Url);
-            var escapedContent = lyric?.ToString();
-            if (escapedContent is null)
-            {
-                throw new NullReferenceException("Internal error on scraping");
-            }
 
-            var panel = new Panel(escapedContent)
-            {
-                Header = new PanelHeader("Lyrics", Justify.Center),
-                Border = BoxBorder.Rounded,
-                BorderStyle = new Style(Color.Green),
-            };
-
-            AnsiConsole.Write(panel);
+            PrintLyric(lyric);
 
             return 0;
         }
@@ -90,6 +78,20 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
         }
     }
 
+    private void PrintLyric(Lyric lyric)
+    {
+        var escapedContent = lyric.ToString();
+
+        var panel = new Panel(escapedContent)
+        {
+            Header = new PanelHeader("Lyrics", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Green),
+        };
+
+        AnsiConsole.Write(panel);
+    }
+
     private async Task<string> GetContentFromUrl(string url)
     {
         using var httpClient = new HttpClient();
@@ -102,11 +104,13 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
         return await response.Content.ReadAsStringAsync();
     }
 
-    private async Task<Lyric?> GetLyricFromContent(string content, string url)
+    private async Task<Lyric> GetLyricFromContent(string content, string url)
     {
         var provider = new LetraMusProvider();
         if (!provider.CheckUrl(url))
-            return null;
+            throw new NullReferenceException(
+                "Internal error while scraping. Please check your link!"
+            );
 
         return await provider.HtmlToLyric(content);
     }
