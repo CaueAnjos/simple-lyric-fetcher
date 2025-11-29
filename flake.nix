@@ -23,7 +23,7 @@
         pkgs.buildDotnetModule
         {
           pname = "slyricf";
-          version = "0.0.0";
+          version = "0.1.1";
           src = ./.;
           projectFile = "src/slyricf/slyricf.csproj";
           inherit dotnet-sdk;
