@@ -116,7 +116,9 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
 
             if (settings.OutputPath is not null)
             {
-                await SaveLyric(lyric, settings.OutputPath);
+                string path = await SaveLyric(lyric, settings.OutputPath);
+                AnsiConsole.MarkupLine($"[green]✓[/] saved successfully at {path}");
+                AnsiConsole.WriteLine();
             }
             else
             {
@@ -137,11 +139,12 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
         }
     }
 
-    private async Task SaveLyric(Lyric lyric, string path)
+    private async Task<string> SaveLyric(Lyric lyric, string path)
     {
         string finalPath = Path.ChangeExtension(path, "md");
         string lyricContent = string.Join("\n\n---\n\n", lyric.Verses);
         await File.WriteAllTextAsync(finalPath, lyricContent, Encoding.UTF8);
+        return finalPath;
     }
 
     private void PrintLyric(Lyric lyric)
