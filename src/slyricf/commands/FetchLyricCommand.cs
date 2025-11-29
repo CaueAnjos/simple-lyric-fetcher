@@ -30,7 +30,58 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
             return ValidationResult.Error("Invalid URL format. Must be a valid HTTP or HTTPS URL");
         }
 
-        return ValidationResult.Success();
+        return FetchLyricCommand.ValidateOutputPath(settings.OutputPath);
+    }
+
+    private static ValidationResult ValidateOutputPath(string? outputPath)
+    {
+        if (outputPath is null)
+            return ValidationResult.Success();
+
+        if (string.IsNullOrWhiteSpace(outputPath))
+            return ValidationResult.Error("Output path cannot be null or empty.");
+
+        try
+        {
+            string fullPath = Path.GetFullPath(outputPath);
+
+            if (Path.GetInvalidPathChars().Any(invalidChar => fullPath.Contains(invalidChar)))
+                return ValidationResult.Error("Output path contains invalid characters.");
+
+            string directoryPath = Path.GetDirectoryName(fullPath)!;
+            if (!Directory.Exists(directoryPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+                catch (Exception)
+                {
+                    return ValidationResult.Error("Cannot create the output directory.");
+                }
+            }
+
+            try
+            {
+                using (
+                    FileStream fs = File.Create(
+                        Path.Combine(directoryPath, Path.GetRandomFileName()),
+                        1,
+                        FileOptions.DeleteOnClose
+                    )
+                ) { }
+            }
+            catch
+            {
+                return ValidationResult.Error("Insufficient permissions for the output path.");
+            }
+
+            return ValidationResult.Success();
+        }
+        catch (Exception ex)
+        {
+            return ValidationResult.Error($"Invalid output path: {ex.Message}");
+        }
     }
 
     public override int Execute(CommandContext context, Settings settings)
@@ -63,6 +114,7 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
             var lyric = await GetLyricFromContent(content, settings.Url);
 
             PrintLyric(lyric);
+            if (settings.OutputPath is not null) { }
 
             return 0;
         }
