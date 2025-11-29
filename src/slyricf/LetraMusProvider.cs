@@ -8,6 +8,11 @@ namespace slyricf;
 
 class LetraMusProvider : IProvider
 {
+    public bool CheckUrl(string url)
+    {
+        return url.Contains("letras.mus");
+    }
+
     public async Task<Lyric> HtmlToLyric(
         string html
     )
