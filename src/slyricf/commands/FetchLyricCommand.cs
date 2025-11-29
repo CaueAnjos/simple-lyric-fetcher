@@ -1,3 +1,4 @@
+using System.Text;
 using slyricf.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -113,8 +114,14 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
 
             var lyric = await GetLyricFromContent(content, settings.Url);
 
-            PrintLyric(lyric);
-            if (settings.OutputPath is not null) { }
+            if (settings.OutputPath is not null)
+            {
+                await SaveLyric(lyric, settings.OutputPath);
+            }
+            else
+            {
+                PrintLyric(lyric);
+            }
 
             return 0;
         }
@@ -128,6 +135,13 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
             AnsiConsole.MarkupLine("[red]Request timed out[/]");
             return 1;
         }
+    }
+
+    private async Task SaveLyric(Lyric lyric, string path)
+    {
+        string finalPath = Path.ChangeExtension(path, "md");
+        string lyricContent = string.Join("\n\n---\n\n", lyric.Verses);
+        await File.WriteAllTextAsync(finalPath, lyricContent, Encoding.UTF8);
     }
 
     private void PrintLyric(Lyric lyric)
