@@ -13,9 +13,7 @@ class LetraMusProvider : IProvider
         return url.Contains("letras.mus");
     }
 
-    public async Task<Lyric> HtmlToLyric(
-        string html
-    )
+    public async Task<Lyric> HtmlToLyric(string html)
     {
         var context = BrowsingContext.New(Configuration.Default);
         var parser = context.GetService<IHtmlParser>();
