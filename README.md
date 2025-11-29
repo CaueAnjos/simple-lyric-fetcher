@@ -5,6 +5,9 @@ lyrics from the internet and show them to you in your terminal. I am planning to
 make it save these songs in a markdown format for future use to create
 presentations. But for now it can't do this 🥲.
 
+Currently, it only accepts songs from `letras.mus.br`. Planning to add more
+providers soon 🥶!
+
 ## Installation
 
 You can install with **dotnet** or **Nix**.
