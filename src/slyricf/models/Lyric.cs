@@ -1,6 +1,16 @@
 namespace slyricf.models;
 
-class Lyric(List<string>? verses = null)
+class Lyric
 {
-    public List<string> Verses = verses is not null ? verses : [];
+    public List<string> Verses;
+
+    public Lyric(List<string> verses)
+    {
+        Verses = verses;
+    }
+
+    public Lyric()
+    {
+        Verses = [];
+    }
 }
