@@ -1,40 +1,33 @@
 {
-  description = "An empty flake template that you can adapt to your own environment";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  inputs.nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0"; # Stable Nixpkgs
+  outputs = {
+    self,
+    flake-utils,
+    nixpkgs,
+    ...
+  }:
+    flake-utils.lib.eachDefaultSystem (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+      dotnet-sdk = pkgs.dotnetCorePackages.sdk_9_0;
+    in {
+      devShells.default = pkgs.mkShell {
+        packages = with pkgs; [
+          dotnet-sdk
+          csharpier
+        ];
+      };
 
-  outputs = {self, ...} @ inputs: let
-    supportedSystems = [
-      "x86_64-linux"
-      "aarch64-linux"
-      "x86_64-darwin"
-      "aarch64-darwin"
-    ];
-
-    forEachSupportedSystem = f:
-      inputs.nixpkgs.lib.genAttrs supportedSystems (
-        system:
-          f {
-            pkgs = import inputs.nixpkgs {
-              inherit system;
-              config.allowUnfree = true;
-            };
-          }
-      );
-  in {
-    devShells = forEachSupportedSystem (
-      {pkgs}: {
-        default = pkgs.mkShell {
-          packages = with pkgs; [
-            dotnet-sdk_9
-            csharpier
-          ];
-
-          env = {};
-
-          shellHook = "";
+      packages.default =
+        pkgs.buildDotnetModule
+        {
+          pname = "slyricf";
+          version = "0.0.0";
+          src = ./.;
+          projectFile = "src/slyricf/slyricf.csproj";
+          inherit dotnet-sdk;
+          nugetDeps = ./deps.json;
         };
-      }
-    );
-  };
+    });
 }
