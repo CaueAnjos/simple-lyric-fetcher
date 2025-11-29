@@ -57,7 +57,8 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
             AnsiConsole.MarkupLine("[green]✓[/] Lyrics fetched successfully!");
             AnsiConsole.WriteLine();
 
-            var escapedContent = GetLyricFromContent(content, settings.Url);
+            var lyric = await GetLyricFromContent(content, settings.Url);
+            var escapedContent = lyric?.ToString();
             if (escapedContent is null)
             {
                 throw new NullReferenceException("Internal error on scraping");
