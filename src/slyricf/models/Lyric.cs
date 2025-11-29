@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace slyricf.models;
 
 class Lyric
@@ -12,5 +14,15 @@ class Lyric
     public Lyric()
     {
         Verses = [];
+    }
+
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        foreach (var verse in Verses)
+        {
+            builder.AppendLine(verse);
+        }
+        return builder.ToString();
     }
 }
