@@ -8,7 +8,7 @@ presentations. But for now it can't do this 🥲.
 Currently, it only accepts songs from `letras.mus.br`. Planning to add more
 providers soon 🥶!
 
-## Installation
+## Installation 📦
 
 You can install with **dotnet** or **Nix**.
 
@@ -21,11 +21,29 @@ dotnet tool install -g slyricf
 1. **Nix**
 
 ```bash
-nix profile install github:CaueAnjos/simple-lyric-fetcher
+nix profile add github:CaueAnjos/simple-lyric-fetcher
 ```
 
 With **Nix** you have the option to just run this program with:
 
 ```bash
 nix run github:CaueAnjos/simple-lyric-fetcher
+```
+
+## Exploring 🧭
+
+type `slyricf -h` on your terminal and try some urls from `letras.mus.br`!
+
+## Unistalling
+
+1. **dotnet**
+
+```bash
+dotnet tool uninstall -g slyricf
+```
+
+1. **Nix**
+
+```bash
+nix profile remove github:CaueAnjos/simple-lyric-fetcher
 ```
