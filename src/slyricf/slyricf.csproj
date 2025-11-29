@@ -9,9 +9,15 @@
     <Version>0.1.1</Version>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>slyricf</ToolCommandName>
+    <PackageId>slyricf</PackageId>
+    <Authors>CaueAnjos</Authors>
+    <Description>A tool to fetch song lyrics from various online providers using their URLs</Description>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/CaueAnjos/simple-lyric-fetcher</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/CaueAnjos/simple-lyric-fetcher.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
