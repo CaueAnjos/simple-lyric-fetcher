@@ -22,7 +22,8 @@ class Lyric
         foreach (var verse in Verses)
         {
             builder.AppendLine(verse);
+            builder.AppendLine();
         }
-        return builder.ToString();
+        return builder.ToString().Trim();
     }
 }
