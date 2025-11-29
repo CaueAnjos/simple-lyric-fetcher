@@ -1,3 +1,4 @@
+using slyricf.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -49,24 +50,19 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
                     {
                         ctx.Spinner(Spinner.Known.Dots);
                         ctx.SpinnerStyle(Style.Parse("green"));
-
-                        using var httpClient = new HttpClient();
-                        httpClient.Timeout = TimeSpan.FromSeconds(30);
-                        httpClient.DefaultRequestHeaders.Add("User-Agent", "SlyricF/1.0");
-
-                        var response = await httpClient.GetAsync(settings.Url);
-                        response.EnsureSuccessStatusCode();
-
-                        return await response.Content.ReadAsStringAsync();
+                        return await GetContentFromUrl(settings.Url);
                     }
                 );
 
             AnsiConsole.MarkupLine("[green]✓[/] Lyrics fetched successfully!");
             AnsiConsole.WriteLine();
 
-            var escapedContent = content.Trim().Replace("[", "_").Replace("]", "_");
+            var escapedContent = GetLyricFromContent(content, settings.Url);
+            if (escapedContent is null)
+            {
+                throw new NullReferenceException("Internal error on scraping");
+            }
 
-            // Display the content in a panel
             var panel = new Panel(escapedContent)
             {
                 Header = new PanelHeader("Lyrics", Justify.Center),
@@ -88,5 +84,26 @@ class FetchLyricCommand : Command<FetchLyricCommand.Settings>
             AnsiConsole.MarkupLine("[red]Request timed out[/]");
             return 1;
         }
+    }
+
+    private async Task<string> GetContentFromUrl(string url)
+    {
+        using var httpClient = new HttpClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(30);
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "SlyricF/1.0");
+
+        var response = await httpClient.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    private async Task<Lyric?> GetLyricFromContent(string content, string url)
+    {
+        var provider = new LetraMusProvider();
+        if (!provider.CheckUrl(url))
+            return null;
+
+        return await provider.HtmlToLyric(content);
     }
 }
